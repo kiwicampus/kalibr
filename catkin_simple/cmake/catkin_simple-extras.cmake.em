@@ -23,7 +23,7 @@ macro(catkin_simple)
   set(${PROJECT_NAME}_TARGETS)
   set(${PROJECT_NAME}_LIBRARIES)
 
-  find_package(catkin REQUIRED)
+  find_package(ament_cmake REQUIRED)
   # call catkin_package_xml() if it has not been called before
   if(NOT _CATKIN_CURRENT_PACKAGE)
     catkin_package_xml()
@@ -144,14 +144,14 @@ endmacro()
 macro(cs_install)
   # Install targets (exec's and lib's)
   install(TARGETS ${${PROJECT_NAME}_TARGETS} ${ARGN}
-    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION lib/${PROJECT_NAME}
   )
   if(${${PROJECT_NAME}_LOCAL_INCLUDE_DIR})
     # Install include directory
     install(DIRECTORY ${${PROJECT_NAME}_LOCAL_INCLUDE_DIR}/
-      DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+      DESTINATION include/${PROJECT_NAME}
       FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
       PATTERN ".svn" EXCLUDE
     )
@@ -159,7 +159,7 @@ macro(cs_install)
 endmacro()
 
 macro(cs_install_scripts)
-  install(PROGRAMS ${ARGN} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  install(PROGRAMS ${ARGN} DESTINATION lib/${PROJECT_NAME})
 endmacro()
 
 macro(cs_export)
@@ -167,18 +167,18 @@ macro(cs_export)
     "" "" "INCLUDE_DIRS;LIBRARIES;CATKIN_DEPENDS;DEPENDS;CFG_EXTRAS"
     ${ARGN})
 
-  set(${PROJECT_NAME}_CATKIN_RUN_DEPENDS)
-  foreach(dep ${${PROJECT_NAME}_RUN_DEPENDS})
+  set(${PROJECT_NAME}_CATKIN_<exec_depend>S)
+  foreach(dep ${${PROJECT_NAME}_<exec_depend>S})
     find_package(${dep} QUIET)
     if(${dep}_FOUND_CATKIN_PROJECT)
-      list(APPEND ${PROJECT_NAME}_CATKIN_RUN_DEPENDS ${dep})
+      list(APPEND ${PROJECT_NAME}_CATKIN_<exec_depend>S ${dep})
     endif()
   endforeach()
 
   catkin_package(
     INCLUDE_DIRS ${${PROJECT_NAME}_LOCAL_INCLUDE_DIR} ${CS_PROJECT_INCLUDE_DIRS}
     LIBRARIES ${${PROJECT_NAME}_LIBRARIES} ${CS_PROJECT_LIBRARIES}
-    CATKIN_DEPENDS ${${PROJECT_NAME}_CATKIN_RUN_DEPENDS} ${CS_PROJECT_CATKIN_DEPENDS}
+    CATKIN_DEPENDS ${${PROJECT_NAME}_CATKIN_<exec_depend>S} ${CS_PROJECT_CATKIN_DEPENDS}
     DEPENDS ${CS_PROJECT_DEPENDS}
     CFG_EXTRAS ${CS_PROJECT_CFG_EXTRAS}
   )

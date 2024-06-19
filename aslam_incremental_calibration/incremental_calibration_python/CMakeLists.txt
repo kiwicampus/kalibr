@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(incremental_calibration_python)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -19,5 +19,5 @@ add_python_export_library(${PROJECT_NAME} src/incremental_calibration
 )
 
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )

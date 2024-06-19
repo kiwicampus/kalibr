@@ -1,18 +1,26 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(sm_eigen)
 
-find_package(catkin REQUIRED COMPONENTS sm_common sm_random)
+set(CMAKE_CXX_STANDARD 14)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+find_package(ament_cmake REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system serialization)
 find_package(Eigen3 REQUIRED)
+find_package(sm_common REQUIRED)
+find_package(sm_random REQUIRED)
 
-catkin_package(
-  INCLUDE_DIRS include ${EIGEN3_INCLUDE_DIRS}
-  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS sm_common sm_random
-  CFG_EXTRAS sm_eigen-extras.cmake
+set(DEPENDENCIES
+  Boost
+  Eigen3
+  sm_common
+  sm_random
 )
 
-include_directories(include ${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories(include ${EIGEN3_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
 ##############
 ## Building ##
@@ -22,38 +30,48 @@ add_library(${PROJECT_NAME}
   src/random.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} 
-                      ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include>"
+)
+
+ament_export_dependencies(${DEPENDENCIES})
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 
 ##################
 ## Installation ##
 ##################
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  EXPORT export_${PROJECT_NAME} 
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION} #${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include #include/${PROJECT_NAME}
 )
 
 #############
 ## Testing ##
 #############
-if(CATKIN_ENABLE_TESTING)
+if(BUILD_TESTING)
   # Avoid clash with tr1::tuple: https://code.google.com/p/googletest/source/browse/trunk/README?r=589#257
   add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+  find_package(ament_cmake_gtest REQUIRED)
 
   ## Add gtest based cpp test target and link libraries
-  catkin_add_gtest(${PROJECT_NAME}-test
+  ament_add_gtest(${PROJECT_NAME}-test
     test/test_main.cpp
     test/EigenSerializationTests.cpp
     test/MatrixSqrtTest.cpp
     )
-  if(TARGET ${PROJECT_NAME}-test)
-    target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-  endif()
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+
 endif()
+
+ament_package()

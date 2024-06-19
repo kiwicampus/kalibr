@@ -7,7 +7,7 @@ This `catkin` package is designed to make the `CMakeLists.txt` of other `catkin`
 Here is an example of a package `foo` which depends on other catkin packages:
 
 ```cmake
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(foo)
 
 find_package(catkin_simple REQUIRED)
@@ -31,7 +31,7 @@ Lets break this down, line by line.
 First is the standard CMake header:
 
 ```cmake
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(foo)
 ```
 
@@ -59,7 +59,7 @@ Packages which are successfully found and identified to be `catkin` packages are
 
 Next, this macro adds the local `include` folder and any `catkin` include directories to the include path with CMake's `include_directories(...)` macro, but the local `include` folder is only added if it exists.
 
-Finally, this macro will discover and build any ROS messages, services, and actions which reside in the `msg`, `srv`, action `action` folders, respectively. The automatic discovery and building of messages/services is only done if your package `build_depend`'s on `message_generation`, and message generation will complain if your package does not run_depend on `message_runtime`.
+Finally, this macro will discover and build any ROS messages, services, and actions which reside in the `msg`, `srv`, action `action` folders, respectively. The automatic discovery and building of messages/services is only done if your package `build_depend`'s on `message_generation`, and message generation will complain if your package does not <exec_depend> on `message_runtime`.
 
 ### cs_add_library()
 

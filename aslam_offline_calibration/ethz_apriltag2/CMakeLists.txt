@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(ethz_apriltag2)
 
 add_definitions(-fPIC -O3)
 
-find_package(catkin REQUIRED)
+find_package(ament_cmake REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(OpenCV REQUIRED)
 
@@ -30,12 +30,12 @@ endif()
 ##################
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )

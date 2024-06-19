@@ -11,7 +11,10 @@
   <url type="website">https://github.com/ethz-asl/aslam_incremental_calibration</url>
   <author email="jerome.maye@mavt.ethz.ch">Jerome Maye</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  
+  <depend>rclcpp</depend>
   <buildtool_depend>catkin_simple</buildtool_depend>
 
   <build_depend>incremental_calibration</build_depend>

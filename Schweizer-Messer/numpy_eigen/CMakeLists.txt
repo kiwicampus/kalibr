@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(numpy_eigen)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -50,15 +50,15 @@ add_python_export_library(${PROJECT_NAME}_test
 #############
 ## Testing ##
 #############
-if(CATKIN_ENABLE_TESTING)
+if(BUILD_TESTING)
   ## Add nosetest based cpp test target.
   catkin_add_nosetests(test/numpy_eigen_tests.py)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ##################
@@ -66,12 +66,12 @@ install(TARGETS ${PROJECT_NAME}
 ##################
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
 )

@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(sm_opencv)
 
 set(CMAKE_CXX_STANDARD 14)
 
-find_package(catkin REQUIRED COMPONENTS sm_common)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sm_common REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
 
 catkin_package(
@@ -14,5 +16,5 @@ catkin_package(
 add_definitions(-D__STRICT_ANSI__)
 
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(kalibr)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -45,10 +45,11 @@ target_link_libraries(${PROJECT_NAME}_errorterms_python ${PROJECT_NAME}_errorter
 ##################################
 # tests
 ##################################
-if(CATKIN_ENABLE_TESTING)
+if(BUILD_TESTING)
   add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+find_package(ament_cmake_gtest REQUIRED)
 
-  catkin_add_gtest(${PROJECT_NAME}_test
+  ament_add_gtest(${PROJECT_NAME}_test
     test/test_main.cpp
     test/TestErrorTerms.cpp
     )
@@ -61,9 +62,9 @@ endif()
 catkin_python_setup()
 
 install(TARGETS ${${PROJECT_NAME}_TARGETS}
-    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 catkin_install_python(
@@ -78,5 +79,5 @@ catkin_install_python(
     python/kalibr_calibrate_imu_camera
     python/kalibr_create_target_pdf
     python/kalibr_calibrate_rs_cameras
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION lib/${PROJECT_NAME}
 )

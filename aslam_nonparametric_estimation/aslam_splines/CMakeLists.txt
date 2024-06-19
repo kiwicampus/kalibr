@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(aslam_splines)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -29,8 +29,8 @@ add_library(${PROJECT_NAME}
 )
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
-if(CATKIN_ENABLE_TESTING)
-  catkin_add_gtest(${PROJECT_NAME}_test
+if(BUILD_TESTING)
+  ament_add_gtest(${PROJECT_NAME}_test
     test/test_main.cpp
     test/TestBSplineExpressions.cpp
     test/TestErrors.cpp
@@ -43,12 +43,12 @@ endif()
 ## Installation ##
 ##################
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )

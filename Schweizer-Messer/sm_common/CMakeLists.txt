@@ -1,62 +1,75 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(sm_common)
 
 set(CMAKE_CXX_STANDARD 14)
 
-find_package(catkin REQUIRED)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+find_package(ament_cmake REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -D__STRICT_ANSI__")
 
-
-catkin_package(
-  INCLUDE_DIRS include ${catkin_INCLUDE_DIRS}
-  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS 
-  DEPENDS Boost
-  CFG_EXTRAS export_flags.cmake
+set(DEPENDENCIES
+  Boost
 )
   
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
 )
 add_library(${PROJECT_NAME}
   src/progress_info.cpp
 )
-target_link_libraries(${PROJECT_NAME} 
-                      ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-target_compile_options(${PROJECT_NAME} PUBLIC "-Wno-deprecated-copy") # TODO: Fix...
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include>"
+)
+
+ament_target_dependencies(${PROJECT_NAME}
+  ${DEPENDENCIES}
+)
 
 ##################
 ## Installation ##
 ##################
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION} #${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include
 )
 
 #############
 ## Testing ##
 #############
-if(CATKIN_ENABLE_TESTING)
+if(ENABLE_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
   # Avoid clash with tr1::tuple: https://code.google.com/p/googletest/source/browse/trunk/README?r=589#257
   add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+find_package(ament_cmake_gtest REQUIRED)
 
-  catkin_add_gtest(${PROJECT_NAME}-test
+  ament_add_gtest(${PROJECT_NAME}-test
     test/test_main.cpp
     test/maths.cpp
     test/serialization_macros.cpp
     test/numerical_comparisons.cpp
     test/hash_id.cpp
-    )
+  )
+  target_include_directories(${PROJECT_NAME}-test PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
   target_link_libraries(${PROJECT_NAME}-test pthread)
 endif()
+
+ament_package()

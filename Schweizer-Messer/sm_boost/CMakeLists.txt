@@ -1,14 +1,21 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(sm_boost)
 
-find_package(catkin REQUIRED COMPONENTS sm_common)
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+find_package(ament_cmake REQUIRED)
+find_package(sm_common REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system serialization thread)
 
-catkin_package(
-  INCLUDE_DIRS include ${catkin_INCLUDE_DIRS}
-  LIBRARIES sm_boost
-  CATKIN_DEPENDS sm_common
-  DEPENDS
+set(DEPENDENCIES
+  sm_common
+  Boost
 )
 
 include_directories(include ${Boost_INCLUDE_DIRS})
@@ -24,35 +31,54 @@ add_library(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} 
-                      ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+  ${Boost_LIBRARIES}
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include>"
+)
+
+ament_target_dependencies(${PROJECT_NAME}  
+  ${DEPENDENCIES}
+)
 
 ##################
 ## Installation ##
 ##################
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
-install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION} # Perhaps risky because of "boost"
+install(
+  DIRECTORY include/
+  DESTINATION include/${PROJECT_NAME}/
 )
 
 #############
 ## Testing ##
 #############
-if(CATKIN_ENABLE_TESTING)
+if(BUILD_TESTING)
   # Avoid clash with tr1::tuple: https://code.google.com/p/googletest/source/browse/trunk/README?r=589#257
   add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+  find_package(ament_cmake_gtest REQUIRED)
 
   ## Add gtest based cpp test target and link libraries
-  catkin_add_gtest(${PROJECT_NAME}-test
+  ament_add_gtest(${PROJECT_NAME}-test
     test/test_main.cpp
     test/testFuture.cpp)
-  if(TARGET ${PROJECT_NAME}-test)
-    target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-  endif()
+
+  target_include_directories(${PROJECT_NAME}-test PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+  
 endif()
+
+ament_package()

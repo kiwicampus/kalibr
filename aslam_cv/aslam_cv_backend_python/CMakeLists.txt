@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(aslam_cv_backend_python)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -37,5 +37,5 @@ add_python_export_library(${PROJECT_NAME} python/aslam_cv_backend
 ## Installation ##
 ##################
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )

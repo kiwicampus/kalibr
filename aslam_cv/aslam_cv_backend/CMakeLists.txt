@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(aslam_cv_backend)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -33,11 +33,12 @@ add_library(${PROJECT_NAME}
 )
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
-if(CATKIN_ENABLE_TESTING)
+if(BUILD_TESTING)
   # Avoid clash with tr1::tuple: https://code.google.com/p/googletest/source/browse/trunk/README?r=589#257
   add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+find_package(ament_cmake_gtest REQUIRED)
 
-  catkin_add_gtest(${PROJECT_NAME}_test
+  ament_add_gtest(${PROJECT_NAME}_test
     test/test_main.cpp
     )
   target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
@@ -47,12 +48,12 @@ endif()
 ## Installation ##
 ##################
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )

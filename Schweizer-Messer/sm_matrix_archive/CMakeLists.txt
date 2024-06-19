@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(sm_matrix_archive)
 
 set(CMAKE_CXX_STANDARD 14)
 
-find_package(catkin REQUIRED COMPONENTS sm_common)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sm_common REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 
 find_package(Eigen3 REQUIRED)
@@ -33,25 +35,26 @@ target_link_libraries(${PROJECT_NAME}
 ##################
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )
 
 #############
 ## Testing ##
 #############
-if(CATKIN_ENABLE_TESTING)
+if(BUILD_TESTING)
   # Avoid clash with tr1::tuple: https://code.google.com/p/googletest/source/browse/trunk/README?r=589#257
   add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+find_package(ament_cmake_gtest REQUIRED)
 
   ## Add gtest based cpp test target and link libraries
-  catkin_add_gtest(${PROJECT_NAME}-test
+  ament_add_gtest(${PROJECT_NAME}-test
     test/test_main.cpp
     test/TestMatrixArchive.cpp
     )

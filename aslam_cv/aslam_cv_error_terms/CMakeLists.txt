@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(aslam_cv_error_terms)
 
 find_package(Boost REQUIRED COMPONENTS system)
@@ -24,12 +24,13 @@ catkin_package(
   INCLUDE_DIRS include
 )
 
-if(CATKIN_ENABLE_TESTING)
+if(BUILD_TESTING)
   # Avoid clash with tr1::tuple: https://code.google.com/p/googletest/source/browse/trunk/README?r=589#257
   add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+find_package(ament_cmake_gtest REQUIRED)
 
   include_directories(include ${catkin_INCLUDE_DIRS})
-  # catkin_add_gtest(${PROJECT_NAME}_test
+  # ament_add_gtest(${PROJECT_NAME}_test
   #   test/test_main.cpp
   #   test/TestReprojectionError.cpp
   # )
@@ -40,5 +41,5 @@ endif()
 ## Installation ##
 ##################
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )

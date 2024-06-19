@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(sm_python)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -56,5 +56,5 @@ target_link_libraries(${PY_PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 ## Installation ##
 ##################
 install(DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+  DESTINATION include
 )
