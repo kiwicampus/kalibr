@@ -50,13 +50,13 @@ ament_target_dependencies(${PROJECT_NAME}
 install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION bin
 )
 
 ## Mark cpp header files for installation
 install(
   DIRECTORY include/
-  DESTINATION include/${PROJECT_NAME}/
+  DESTINATION include/
 )
 
 #############

@@ -13,6 +13,8 @@ find_package(Eigen3 REQUIRED)
 find_package(sm_common REQUIRED)
 find_package(sm_random REQUIRED)
 
+set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS_INIT} -fPIC")
+
 set(DEPENDENCIES
   Boost
   Eigen3
@@ -30,30 +32,29 @@ add_library(${PROJECT_NAME}
   src/random.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} sm_random::sm_random)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>"
 )
 
-ament_export_dependencies(${DEPENDENCIES})
-ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_target_dependencies(${PROJECT_NAME} ${DEPENDENCIES})
 
 ##################
 ## Installation ##
 ##################
 
+## Mark cpp header files for installation
 install(TARGETS ${PROJECT_NAME}
-  EXPORT export_${PROJECT_NAME} 
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 
-## Mark cpp header files for installation
 install(DIRECTORY include/
-  DESTINATION include #include/${PROJECT_NAME}
+  DESTINATION include/ #include/${PROJECT_NAME}
 )
 
 #############
@@ -69,9 +70,13 @@ if(BUILD_TESTING)
     test/test_main.cpp
     test/EigenSerializationTests.cpp
     test/MatrixSqrtTest.cpp
-    )
-  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+  )
 
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+  install(TARGETS 
+    ${PROJECT_NAME}-test
+    DESTINATION lib/${PROJECT_NAME}
+  )
 endif()
 
 ament_package()

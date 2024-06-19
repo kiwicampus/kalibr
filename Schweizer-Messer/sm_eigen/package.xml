@@ -11,10 +11,9 @@
   <test_depend>ament_cmake_gtest</test_depend>
   
   <build_depend>eigen</build_depend>
-  <build_depend>sm_common</build_depend>
-  <build_depend>sm_random</build_depend>
-  <exec_depend>sm_common</exec_depend>
-  <exec_depend>sm_random</exec_depend>
+  <depend>sm_common</depend>
+  <depend>sm_random</depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

@@ -1,5 +1,5 @@
 #include <sm/eigen/random.hpp>
-#include <sm/random.hpp>
+#include "sm/random.hpp"
 
 namespace sm {
 namespace eigen {
